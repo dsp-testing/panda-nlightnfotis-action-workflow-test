@@ -1,0 +1,23 @@
+name: Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  misra:
+    name: Analysis
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/commaai/panda:latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: cpp
+      - name: Build FW
+        run: scons -j$(nproc)
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
